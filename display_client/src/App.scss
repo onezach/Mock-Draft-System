@@ -1,0 +1,89 @@
+// .Container {
+//     flex-direction: column;    
+// }
+
+.BoardContainer {
+    display: flex;
+    // background-color: cyan;
+    height: 85vh;
+    border-top: solid black 5px;
+}
+
+.Header {
+    display: flex;
+    // background-color: yellow;
+    height: 15vh;
+}
+
+.OffTitle {
+    // background-color: white;
+    flex: 1;
+}
+
+.OnTitle {
+    flex: auto;
+    font-size: 60px;
+    text-align: center;
+    margin: auto;
+    // border: solid black 1px;
+}
+
+.Board {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.RoundColContainer {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+
+.TeamColContainer {
+    flex: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.Round {
+    flex: auto;
+    text-align: center;
+    background-color: white;
+    margin: 1%;
+    border-radius: 10px;
+    border: solid black 1px;
+    display: grid;
+    align-items: center;
+}
+
+.Round-empty {
+    height: 2.5em;
+}
+
+.Team-row {
+    height: 2.5em;
+    display: flex;
+    flex-direction: row;
+}
+
+.Team {
+    flex: auto;
+    font-size: 1.5em;
+    text-align: center;
+    background-color: white;
+    margin: 0.1%;
+    border-radius: 10px;
+    border: solid black 1px;
+    display: grid;
+    align-items: center;
+}
+
+.PicksGrid {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    background-color: cyan;
+}
