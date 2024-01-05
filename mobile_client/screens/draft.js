@@ -13,6 +13,8 @@ import PositionButton from "../components/position_button";
 
 import { POSITIONS, TEAMS } from "../data/static";
 
+const SERVER_URL = "http://192.168.86.36:5000";
+
 const DraftScreen = () => {
 
   const [round, setRound] = useState(1);
@@ -33,7 +35,7 @@ const DraftScreen = () => {
   };
 
   const refresh = () => {
-    fetch("http://192.168.86.36:5000/client/update", { method: "GET" })
+    fetch(SERVER_URL + "/client/update", { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);

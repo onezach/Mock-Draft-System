@@ -1,0 +1,5 @@
+name: fantasy_draft
+dependencies:
+  - python
+  - flask
+  - flask_cors

@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 
+const SERVER_URL = "http://192.168.86.36:5000";
+
 const Display = () => {
   const [currentTeam, setCurrentTeam] = useState("...");
   const [numRounds, setNumRounds] = useState(0);
@@ -7,7 +9,7 @@ const Display = () => {
 
   useEffect(() => {
     const updateInterval = setInterval(() => {
-      fetch("http://192.168.86.36:5000/display/update", { method: "GET" })
+      fetch(SERVER_URL + "/display/update", { method: "GET" })
         .then((r) => r.json())
         .then((r) => {
           setCurrentTeam(r.current_team);
@@ -21,7 +23,6 @@ const Display = () => {
 
   const buildRounds = useCallback(() => {
     let rounds = [];
-    console.log("triggered");
     for (let i = 0; i < numRounds; i++) {
       rounds.push(
         <div
