@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 
+import { TEAM_MAPPINGS } from "./data/static";
+
 const SERVER_URL = "http://192.168.1.189:5000";
 
 const Display = () => {
   const [currentTeam, setCurrentTeam] = useState("...");
   const [numRounds, setNumRounds] = useState(0);
   const [teams, setTeams] = useState([]);
+  const [picks, setPicks] = useState([[]]);
 
   useEffect(() => {
     const updateInterval = setInterval(() => {
@@ -15,6 +18,7 @@ const Display = () => {
           setCurrentTeam(r.current_team);
           setNumRounds(r.num_rounds);
           setTeams(r.teams);
+          setPicks(r.picks);
         })
         .catch(() => {});
     }, 2000);
@@ -45,6 +49,19 @@ const Display = () => {
     ));
   }, [teams]);
 
+  const buildPicks = useCallback(() => {
+    return picks.map((round, ridx) =>
+    <div className="Pick-row" key={"r" + ridx}>
+        {round.map((pick, pidx) => (
+        <div className="Pick" key={"r" + ridx + "p" + pidx}>
+          {pick["show"] && <div><b>{pick["position"]}{pick["position_rank"]}</b> {pick["name"]} - {TEAM_MAPPINGS[pick["team"]]}</div>}
+        </div>
+      ))}
+    </div>
+      
+    );
+  }, [picks]);
+
   return (
     <div className="Container">
       <div className="Header">
@@ -63,7 +80,7 @@ const Display = () => {
           </div>
           <div className="TeamColContainer">
             <div className="Team-row">{buildTeams()}</div>
-            <div className="PicksGrid"></div>
+            <div className="PicksGrid">{buildPicks()}</div>
           </div>
         </div>
       </div>

@@ -16,7 +16,6 @@ import { POSITIONS, TEAMS } from "../data/static";
 const SERVER_URL = "http://192.168.1.189:5000";
 
 const DraftScreen = () => {
-
   const [round, setRound] = useState(1);
   const [pickNumber, setPickNumber] = useState(1);
   const [overall, setOverall] = useState(1);
@@ -48,7 +47,7 @@ const DraftScreen = () => {
   };
 
   const confirmDraftPick = () => {
-    fetch("http://192.168.86.36:5000/client/pick", {
+    fetch(SERVER_URL + "/client/pick", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,7 +69,7 @@ const DraftScreen = () => {
   useEffect(() => {
     const refreshInterval = setInterval(() => {
       refresh();
-    }, 10000);
+    }, 2000);
     return () => clearInterval(refreshInterval);
   }, []);
 

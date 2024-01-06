@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { useState } from "react";
-import DraftScreen from "./screens/draft";
+import DraftScreen from "./screens/draft_client";
 
 export default function App() {
   const [screen, setScreen] = useState("draft");

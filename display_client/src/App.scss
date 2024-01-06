@@ -1,89 +1,109 @@
 // .Container {
-//     flex-direction: column;    
+//     flex-direction: column;
 // }
 
 .BoardContainer {
-    display: flex;
-    // background-color: cyan;
-    height: 85vh;
-    border-top: solid black 5px;
+  display: flex;
+  // background-color: cyan;
+  height: 85vh;
+  border-top: solid black 5px;
 }
 
 .Header {
-    display: flex;
-    // background-color: yellow;
-    height: 15vh;
+  display: flex;
+  // background-color: yellow;
+  height: 15vh;
 }
 
 .OffTitle {
-    // background-color: white;
-    flex: 1;
+  // background-color: white;
+  flex: 1;
 }
 
 .OnTitle {
-    flex: auto;
-    font-size: 60px;
-    text-align: center;
-    margin: auto;
-    // border: solid black 1px;
+  flex: auto;
+  font-size: 60px;
+  text-align: center;
+  margin: auto;
+  // border: solid black 1px;
 }
 
 .Board {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
 }
 
 .RoundColContainer {
-    display: flex;
-    height: 100%;
-    flex-direction: column;
+  flex: 1;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  //   background-color: gray;
 }
 
 .TeamColContainer {
-    flex: auto;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  flex: 7.5;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: scroll;
+  flex-wrap: wrap;
 }
 
 .Round {
-    flex: auto;
-    text-align: center;
-    background-color: white;
-    margin: 1%;
-    border-radius: 10px;
-    border: solid black 1px;
-    display: grid;
-    align-items: center;
+  flex: auto;
+  text-align: center;
+  //   background-color: white;
+  margin: 1%;
+  //   border-radius: 10px;
+  //   border: solid black 1px;
+  display: grid;
+  align-items: center;
 }
 
 .Round-empty {
-    height: 2.5em;
+  height: 2.5em;
 }
 
 .Team-row {
-    height: 2.5em;
+  height: 2.5em;
+  display: flex;
+  flex-direction: row;
+}
+
+.Team {
+  width: 14vw;
+  font-size: 1.5em;
+  text-align: center;
+  //   background-color: red;
+  margin: 0.1%;
+  //   border-radius: 10px;
+  //   border: solid black 1px;
+  display: grid;
+  align-items: center;
+}
+
+.PicksGrid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  //   background-color: cyan;
+}
+
+.Pick-row {
+    flex: 1;
     display: flex;
     flex-direction: row;
 }
 
-.Team {
-    flex: auto;
-    font-size: 1.5em;
-    text-align: center;
-    background-color: white;
-    margin: 0.1%;
-    border-radius: 10px;
-    border: solid black 1px;
-    display: grid;
-    align-items: center;
-}
-
-.PicksGrid {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    background-color: cyan;
+.Pick {
+  border-radius: 10px;
+  border: solid black 1px;
+  display: grid;
+  align-items: center;
+  width: 14vw;
+  text-align: center;
+//   background-color: red;
 }
