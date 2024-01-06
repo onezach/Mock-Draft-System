@@ -1,4 +1,3 @@
-export const SERVER_URL = "http://192.168.86.36:5000";
 export const POSITIONS = ["QB", "RB", "WR", "TE", "K", "DST"];
 export const TEAMS = [
   "Arizona Cardinals",

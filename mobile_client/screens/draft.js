@@ -11,7 +11,9 @@ import {
 import SelectDropdown from "react-native-select-dropdown";
 import PositionButton from "../components/position_button";
 
-import { POSITIONS, TEAMS, SERVER_URL } from "../../data/static";
+import { POSITIONS, TEAMS } from "../data/static";
+
+const SERVER_URL = "http://192.168.1.189:5000";
 
 const DraftScreen = () => {
 

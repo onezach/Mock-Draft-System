@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-import { SERVER_URL } from "../../data/static";
+const SERVER_URL = "http://192.168.1.189:5000";
 
 const Display = () => {
   const [currentTeam, setCurrentTeam] = useState("...");

@@ -20,11 +20,8 @@ def base():
 @cross_origin()
 def pick():
     data = request.get_json()
-    print(data)
-
-    picks = x.make_pick(data["name"], data["team"], data["position"])
-
-    return jsonify(message="Pick successful", pick=picks)
+    x.make_pick(data["name"], data["team"], data["position"])
+    return jsonify(message="Pick successful")
 
 @app.route("/client/update", methods=['GET'])
 @cross_origin()
@@ -35,7 +32,7 @@ def send_status():
 @app.route("/display/update", methods=['GET'])
 @cross_origin()
 def update_display():
-    return jsonify(current_team=x.get_current_team(), num_rounds=NUM_ROUNDS, teams=teams)
+    return jsonify(current_team=x.get_current_team(), num_rounds=NUM_ROUNDS, teams=teams, picks=x.picks)
 
     
 if __name__ == "__main__":
