@@ -2,6 +2,8 @@
 //     flex-direction: column;
 // }
 
+$boardWidth: 14vw;
+
 .BoardContainer {
   display: flex;
   // background-color: cyan;
@@ -74,7 +76,7 @@
 }
 
 .Team {
-  width: 14vw;
+  width: $boardWidth;
   font-size: 1.5em;
   text-align: center;
   //   background-color: red;
@@ -103,7 +105,7 @@
   border: solid black 1px;
   display: grid;
   align-items: center;
-  width: 14vw;
+  width: $boardWidth;
   text-align: center;
 //   background-color: red;
 }
