@@ -1,4 +1,5 @@
 from copy import deepcopy
+import csv
 
 class Draft:
 
@@ -30,6 +31,7 @@ class Draft:
             "team": team,
             "position": position,
             "position_rank": self.position_counts[position],
+            "overall": self.current_pick["overall"],
             "show": True
         })
 
@@ -38,6 +40,8 @@ class Draft:
     
     def __advance_pick(self):
         if self.current_pick["number"] == self.num_teams:
+            self.__save()
+
             self.current_pick["round"] = self.current_pick["round"] + 1
             self.current_pick["number"] = 1
         else:
@@ -49,3 +53,12 @@ class Draft:
             return self.teams[self.current_pick["number"] - 1]
         else:
             return self.teams[self.num_teams - self.current_pick["number"]]
+        
+    def __save(self):
+        with open("save.csv", "w") as savefile:
+            writer = csv.writer(savefile)
+            for i in range(self.current_pick["round"]):
+                for j in range(self.num_teams):
+                    print(f"{self.picks[i][j]["name"]},{self.picks[i][j]["position"]},{self.picks[i][j]["position_rank"]},{self.picks[i][j]["overall"]}")
+                writer.writerow(self.picks[i])
+        # pass

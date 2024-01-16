@@ -6,15 +6,14 @@ from draft import Draft
 app = Flask(__name__)
 
 NUM_ROUNDS = 4
-teams = ["Team 1", "Team 2", "Team 3", "Team 4"]#, "Team 5", "Team 6", "Team 7", "Team 8", "Team 9", "Team 10", "Team 11", "Team 12", ]
+teams = ["Team 1", "Team 2", "Team 3", "Team 4", "Team 5", "Team 6", "Team 7", "Team 8", "Team 9", "Team 10", "Team 11", "Team 12", ]
 
 x = Draft(NUM_ROUNDS, teams)
 
 @app.route("/", methods=['GET'])
 @cross_origin()
 def base():
-    response = jsonify(message="Server active")
-    return response
+    return jsonify(message="Server active")
 
 @app.route("/client/pick", methods=['POST'])
 @cross_origin()

@@ -54,7 +54,7 @@ const Display = () => {
     <div className="Pick-row" key={"r" + ridx}>
         {round.map((pick, pidx) => (
         <div className="Pick" key={"r" + ridx + "p" + pidx}>
-          {pick["show"] && <div><b>{pick["position"]}{pick["position_rank"]}</b> {pick["name"]} - {TEAM_MAPPINGS[pick["team"]]}</div>}
+          {pick["show"] && <div><b>{pick["position"]}{pick["position_rank"]}</b> {pick["position"] !== "DST" ? pick["name"] : ""} - {TEAM_MAPPINGS[pick["team"]]}</div>}
         </div>
       ))}
     </div>

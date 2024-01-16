@@ -37,7 +37,7 @@ const DraftScreen = () => {
     fetch(SERVER_URL + "/client/update", { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         setRound(data.pick.round);
         setPickNumber(data.pick.number);
         setOverall(data.pick.overall);
