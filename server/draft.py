@@ -7,6 +7,9 @@ class Draft:
         self.num_rounds = num_rounds
         self.teams = teams
         self.num_teams = len(teams)
+        self.time_per_pick = 150
+        self.time_on_clock = 150
+        self.clock_running = True
 
         cell = {"name": "", "team": "", "position": "", "position_rank": 0, "show": False}
         p = []
@@ -61,4 +64,3 @@ class Draft:
                 for j in range(self.num_teams):
                     print(f"{self.picks[i][j]["name"]},{self.picks[i][j]["position"]},{self.picks[i][j]["position_rank"]},{self.picks[i][j]["overall"]}")
                 writer.writerow(self.picks[i])
-        # pass

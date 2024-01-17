@@ -20,6 +20,7 @@ const DraftScreen = () => {
   const [pickNumber, setPickNumber] = useState(1);
   const [overall, setOverall] = useState(1);
   const [pickingTeam, setPickingTeam] = useState("");
+  const [time, setTime] = useState(-1);
 
   const [playerName, setPlayerName] = useState("");
   const [playerTeam, setPlayerTeam] = useState("");
@@ -42,6 +43,7 @@ const DraftScreen = () => {
         setPickNumber(data.pick.number);
         setOverall(data.pick.overall);
         setPickingTeam(data.team);
+        setTime(data.time)
       })
       .catch(() => {});
   };
@@ -69,7 +71,7 @@ const DraftScreen = () => {
   useEffect(() => {
     const refreshInterval = setInterval(() => {
       refresh();
-    }, 2000);
+    }, 250);
     return () => clearInterval(refreshInterval);
   }, []);
 
@@ -79,7 +81,7 @@ const DraftScreen = () => {
         <View>
           <View style={styles.pickData}>
             <View>
-              <Text style={styles.teamText}>{pickingTeam}</Text>
+              <Text style={styles.teamText}>{pickingTeam} - {time}</Text>
             </View>
             <View>
               <Text>
