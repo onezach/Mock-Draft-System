@@ -21,6 +21,7 @@ const DraftScreen = () => {
   const [overall, setOverall] = useState(1);
   const [pickingTeam, setPickingTeam] = useState("");
   const [time, setTime] = useState(-1);
+  const [clockRunning, setClockRunning] = useState(false);
 
   const [playerName, setPlayerName] = useState("");
   const [playerTeam, setPlayerTeam] = useState("");
@@ -42,7 +43,8 @@ const DraftScreen = () => {
         setPickNumber(data.pick.number);
         setOverall(data.pick.overall);
         setPickingTeam(data.team);
-        setTime(data.time)
+        setTime(data.time);
+        setClockRunning(data.clock_running);
       })
       .catch(() => {});
   };
@@ -73,6 +75,8 @@ const DraftScreen = () => {
     }, 500);
     return () => clearInterval(refreshInterval);
   }, []);
+
+  const toggleClock = () => fetch(SERVER_URL + "/draft/toggle_clock", {method: "GET"}).then((r) => r.json()).then((r) => console.log(r)).catch(() => {});
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -139,6 +143,10 @@ const DraftScreen = () => {
                 playerPosition === ""
               }
               onPress={confirmDraftPick}
+            />
+            <Button 
+              title={clockRunning ? "Pause" : "Resume"}
+              onPress={toggleClock}
             />
           </View>
         </View>

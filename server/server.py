@@ -6,9 +6,9 @@ from draft import Draft
 app = Flask(__name__)
 
 NUM_ROUNDS = 4
-teams = ["Team 1", "Team 2", "Team 3", "Team 4", "Team 5", "Team 6", "Team 7", "Team 8", "Team 9", "Team 10", "Team 11", "Team 12", ]
+teams = ["Team 1", "Team 2", "Team 3", "Team 4", "Team 5", "Team 6", "Team 7", "Team 8", "Team 9", "Team 10", "Team 11", "Team 12"]
 
-x = Draft(NUM_ROUNDS, teams)
+x = Draft(NUM_ROUNDS, teams, 150)
 
 @app.route("/", methods=['GET'])
 @cross_origin()
@@ -25,8 +25,7 @@ def pick():
 @app.route("/client/update", methods=['GET'])
 @cross_origin()
 def send_status():
-    return jsonify(pick=x.current_pick, team=x.get_current_team(), time=x.time_on_clock)
-
+    return jsonify(pick=x.current_pick, team=x.get_current_team(), time=x.time_on_clock, clock_running=x.clock_running)
 
 @app.route("/display/update", methods=['GET'])
 @cross_origin()
@@ -37,6 +36,11 @@ def update_display():
                    picks=x.picks, 
                    clock_running=x.clock_running, 
                    time_on_clock=x.time_on_clock)
+
+@app.route("/draft/toggle_clock", methods=['GET'])
+def toggle_clock():
+    x.toggle_timer()
+    return jsonify(clock_running=x.clock_running)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -32,4 +32,4 @@ npm start
 ### Next Steps
 - Improved visualization
 - Drafting client that can take place from desktop, which will require session management on the server end
-- A master-client that has full visibility across all clients and power to fix any issues that may come up during the draft process
+- A master-client that has full visibility across all clients and power to fix any issues that may come up during the draft process - also in charge of initialization

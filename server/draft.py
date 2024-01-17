@@ -5,13 +5,13 @@ import time
 
 class Draft:
 
-    def __init__(self, num_rounds: int, teams: list[str]):
+    def __init__(self, num_rounds: int, teams: list[str], time_per_pick: int):
         self.num_rounds = num_rounds
         self.teams = teams
         self.num_teams = len(teams)
-        self.time_per_pick = 150
-        self.time_on_clock = 150
-        self.clock_running = True
+        self.time_per_pick = time_per_pick
+        self.time_on_clock = time_per_pick
+        self.clock_running = False
 
         cell = {"name": "", "team": "", "position": "", "position_rank": 0, "show": False}
         p = []
@@ -25,8 +25,6 @@ class Draft:
 
         self.current_pick = {"round": 1, "number": 1, "overall": 1}
         self.position_counts = {"QB": 1, "RB": 1, "WR": 1, "TE": 1, "K": 1, "DST": 1}
-
-        self.start_timer()
 
     def make_pick(self, name: str, team: str, position: str):
         self.stop_timer()
@@ -80,6 +78,12 @@ class Draft:
 
     def stop_timer(self): 
         self.clock_running = False
+
+    def toggle_timer(self):
+        if self.clock_running:
+            self.stop_timer()
+        else:
+            self.start_timer()
 
     def reset_timer(self):
         self.time_on_clock = self.time_per_pick
