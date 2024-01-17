@@ -8,24 +8,15 @@ const Display = () => {
   const [currentTeam, setCurrentTeam] = useState("");
   const [numRounds, setNumRounds] = useState(0);
   const [teams, setTeams] = useState([]);
-  const [timePerPick, setTimePerPick] = useState(-1);
   const [picks, setPicks] = useState([[]]);
 
   const [timeOnClock, setTimeOnClock] = useState(-1);
-  const [clockRunning, setClockRunning] = useState(true);
-
-  useEffect(() => {console.log("time change:" + timePerPick); setTimeOnClock(timePerPick);}, [timePerPick]);
+  const [clockRunning, setClockRunning] = useState(false);
 
   useEffect(() => {
     const updateInterval = setInterval(() => {
       fetch(SERVER_URL + "/display/update", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            time: timeOnClock
-        }),
+        method: "GET"
       })
         .then((r) => r.json())
         .then((r) => {
@@ -34,29 +25,12 @@ const Display = () => {
           setTeams(r.teams);
           setPicks(r.picks);
           setClockRunning(r.clock_running);
-
-          if (r.timePerPick !== timePerPick) {
-            setTimePerPick(r.time_per_pick);
-          }
+          setTimeOnClock(r.time_on_clock)
         })
         .catch(() => {});
-    }, 250);
+    }, 500);
     return () => clearInterval(updateInterval);
   }, [timeOnClock]);
-
-
-  // timer
-  useEffect(() => {
-    const timer = setInterval(() => {
-        if (clockRunning && timeOnClock > 0) {
-            setTimeOnClock((cur) => cur - 1);
-        }
-    }, 1000);
-
-    return () => {
-        clearInterval(timer)
-    }
-  }, [clockRunning, timeOnClock])
 
   const buildRounds = useCallback(() => {
     let rounds = [];

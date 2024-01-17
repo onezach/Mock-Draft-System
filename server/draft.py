@@ -1,5 +1,7 @@
 from copy import deepcopy
 import csv
+from threading import Thread
+import time
 
 class Draft:
 
@@ -24,7 +26,10 @@ class Draft:
         self.current_pick = {"round": 1, "number": 1, "overall": 1}
         self.position_counts = {"QB": 1, "RB": 1, "WR": 1, "TE": 1, "K": 1, "DST": 1}
 
+        self.start_timer()
+
     def make_pick(self, name: str, team: str, position: str):
+        self.stop_timer()
 
         r = self.current_pick["round"] - 1
         n = self.current_pick["number"] - 1 if self.current_pick["round"] % 2 == 1 else self.num_teams - self.current_pick["number"]
@@ -51,6 +56,9 @@ class Draft:
             self.current_pick["number"] = self.current_pick["number"] + 1
         self.current_pick["overall"] = self.current_pick["overall"] + 1
 
+        self.reset_timer()
+        self.start_timer()
+
     def get_current_team(self):
         if self.current_pick["round"] % 2 == 1:
             return self.teams[self.current_pick["number"] - 1]
@@ -64,3 +72,20 @@ class Draft:
                 for j in range(self.num_teams):
                     print(f"{self.picks[i][j]["name"]},{self.picks[i][j]["position"]},{self.picks[i][j]["position_rank"]},{self.picks[i][j]["overall"]}")
                 writer.writerow(self.picks[i])
+
+    def start_timer(self):
+        self.clock_running = True
+        self.timer = Thread(target=self.__timer, daemon=True)
+        self.timer.start()
+
+    def stop_timer(self): 
+        self.clock_running = False
+
+    def reset_timer(self):
+        self.time_on_clock = self.time_per_pick
+
+    def __timer(self):
+        while self.clock_running and self.time_on_clock > 0:
+            print(self.time_on_clock)
+            time.sleep(1)
+            self.time_on_clock = self.time_on_clock - 1

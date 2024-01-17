@@ -28,13 +28,15 @@ def send_status():
     return jsonify(pick=x.current_pick, team=x.get_current_team(), time=x.time_on_clock)
 
 
-@app.route("/display/update", methods=['POST'])
+@app.route("/display/update", methods=['GET'])
 @cross_origin()
 def update_display():
-    data = request.get_json()
-    x.time_on_clock = data["time"]
-    return jsonify(current_team=x.get_current_team(), num_rounds=NUM_ROUNDS, teams=teams, picks=x.picks, time_per_pick=x.time_per_pick, clock_running=x.clock_running)
-
+    return jsonify(current_team=x.get_current_team(), 
+                   num_rounds=NUM_ROUNDS, 
+                   teams=teams, 
+                   picks=x.picks, 
+                   clock_running=x.clock_running, 
+                   time_on_clock=x.time_on_clock)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

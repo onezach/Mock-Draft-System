@@ -38,7 +38,6 @@ const DraftScreen = () => {
     fetch(SERVER_URL + "/client/update", { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data);
         setRound(data.pick.round);
         setPickNumber(data.pick.number);
         setOverall(data.pick.overall);
@@ -71,7 +70,7 @@ const DraftScreen = () => {
   useEffect(() => {
     const refreshInterval = setInterval(() => {
       refresh();
-    }, 250);
+    }, 500);
     return () => clearInterval(refreshInterval);
   }, []);
 
