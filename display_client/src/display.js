@@ -16,7 +16,7 @@ const Display = () => {
   useEffect(() => {
     const updateInterval = setInterval(() => {
       fetch(SERVER_URL + "/display/update", {
-        method: "GET"
+        method: "GET",
       })
         .then((r) => r.json())
         .then((r) => {
@@ -25,7 +25,7 @@ const Display = () => {
           setTeams(r.teams);
           setPicks(r.picks);
           setClockRunning(r.clock_running);
-          setTimeOnClock(r.time_on_clock)
+          setTimeOnClock(r.time_on_clock);
         })
         .catch(() => {});
     }, 500);
@@ -56,6 +56,13 @@ const Display = () => {
     ));
   }, [teams]);
 
+  const formatName = (raw) => {
+    const nameSplit = raw.split(" ");
+    const firstName = nameSplit.shift();
+    const lastName = nameSplit.join(" ");
+    return firstName[0] + ". " + lastName;
+  };
+
   const buildPicks = useCallback(() => {
     return picks.map((round, ridx) => (
       <div className="Pick-row" key={"r" + ridx}>
@@ -67,7 +74,7 @@ const Display = () => {
                   {pick["position"]}
                   {pick["position_rank"]}
                 </b>{" "}
-                {pick["position"] !== "DST" ? pick["name"] : ""} -{" "}
+                {pick["position"] !== "DST" ? formatName(pick["name"]) : ""} -{" "}
                 {TEAM_MAPPINGS[pick["team"]]}
               </div>
             )}
@@ -77,12 +84,24 @@ const Display = () => {
     ));
   }, [picks]);
 
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    let formattedSeconds = s.toString();
+    if (formattedSeconds.length < 2) {
+      formattedSeconds = "0" + formattedSeconds;
+    }
+    return m + ":" + formattedSeconds;
+  };
+
   return (
     <div className="Container">
       <div className="Header">
         <div className="OffTitle" />
-        <div className="OnTitle">{currentTeam} On the Clock</div>
-        <div className="OffTitle">{timeOnClock}</div>
+        <div className="OnTitle">
+          {currentTeam} - {formatTime(timeOnClock)}
+        </div>
+        <div className="OffTitle"></div>
       </div>
       <div className="BoardContainer">
         <div className="Board">

@@ -72,9 +72,10 @@ class Draft:
                 writer.writerow(self.picks[i])
 
     def start_timer(self):
-        self.clock_running = True
-        self.timer = Thread(target=self.__timer, daemon=True)
-        self.timer.start()
+        if not self.clock_running:
+            self.clock_running = True
+            self.timer = Thread(target=self.__timer, daemon=True)
+            self.timer.start()
 
     def stop_timer(self): 
         self.clock_running = False
