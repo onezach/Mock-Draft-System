@@ -9,13 +9,14 @@ const Display = () => {
   const [numRounds, setNumRounds] = useState(0);
   const [teams, setTeams] = useState([]);
   const [picks, setPicks] = useState([[]]);
+  const [currentPick, setCurrentPick] = useState({"round": 0, "number": 0, "overall": 0});
 
   const [timeOnClock, setTimeOnClock] = useState(-1);
   const [clockRunning, setClockRunning] = useState(false);
 
   useEffect(() => {
     const updateInterval = setInterval(() => {
-      fetch(SERVER_URL + "/display/update", {
+      fetch(SERVER_URL + "/draft/update", {
         method: "GET",
       })
         .then((r) => r.json())
@@ -26,6 +27,7 @@ const Display = () => {
           setPicks(r.picks);
           setClockRunning(r.clock_running);
           setTimeOnClock(r.time_on_clock);
+          setCurrentPick(r.current_pick);
         })
         .catch(() => {});
     }, 500);
@@ -67,7 +69,7 @@ const Display = () => {
     return picks.map((round, ridx) => (
       <div className="Pick-row" key={"r" + ridx}>
         {round.map((pick, pidx) => (
-          <div className="Pick" key={"r" + ridx + "p" + pidx}>
+          <div className={currentPick.round - 1 === ridx && currentPick.number - 1 === pidx ? "Pick-active" : currentPick.round - 1 === ridx || currentPick.number - 1 === pidx ? "Pick-highlighted" : "Pick"} key={"r" + ridx + "p" + pidx}>
             {pick["show"] && (
               <div>
                 <b>

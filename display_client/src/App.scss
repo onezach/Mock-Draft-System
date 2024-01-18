@@ -12,7 +12,7 @@ $boardChipWidth: 14vw;
 
 .BoardContainer {
   display: flex;
-  height: 85vh;
+  height: 82.5vh;
   border-top: solid black 5px;
 }
 
@@ -57,7 +57,7 @@ $boardChipWidth: 14vw;
 
 .Round {
   flex: auto;
-  margin: 1%;
+  margin: 1px;
   @include centralText()
 }
 
@@ -74,8 +74,8 @@ $boardChipWidth: 14vw;
 .Team {
   width: $boardChipWidth;
   font-size: 1.5em;
-  margin: 0.1%;
-  @include centralText()
+  margin: 1px;
+  @include centralText();
 }
 
 .PicksGrid {
@@ -90,9 +90,23 @@ $boardChipWidth: 14vw;
     flex-direction: row;
 }
 
-.Pick {
+@mixin Pick($backgroundColor: white) {
   border-radius: 10px;
   border: solid black 1px;
   width: $boardChipWidth;
-  @include centralText()
+  @include centralText();
+  background-color: $backgroundColor;
+  margin: 1px;
+}
+
+.Pick {
+  @include Pick();
+}
+
+.Pick-highlighted {
+  @include Pick(#c2fffc);
+}
+
+.Pick-active {
+  @include Pick(rgb(255, 252, 158))
 }

@@ -91,6 +91,5 @@ class Draft:
 
     def __timer(self):
         while self.clock_running and self.time_on_clock > 0:
-            print(self.time_on_clock)
             time.sleep(1)
             self.time_on_clock = self.time_on_clock - 1

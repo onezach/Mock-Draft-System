@@ -22,15 +22,26 @@ def pick():
     x.make_pick(data["name"], data["team"], data["position"])
     return jsonify(message="Pick successful")
 
-@app.route("/client/update", methods=['GET'])
-@cross_origin()
-def send_status():
-    return jsonify(pick=x.current_pick, team=x.get_current_team(), time=x.time_on_clock, clock_running=x.clock_running)
+# @app.route("/client/update", methods=['GET'])
+# @cross_origin()
+# def send_status():
+#     return jsonify(pick=x.current_pick, team=x.get_current_team(), time=x.time_on_clock, clock_running=x.clock_running)
 
-@app.route("/display/update", methods=['GET'])
+# @app.route("/display/update", methods=['GET'])
+# @cross_origin()
+# def update_display():
+#     return jsonify(current_team=x.get_current_team(), 
+#                    num_rounds=NUM_ROUNDS, 
+#                    teams=teams, 
+#                    picks=x.picks, 
+#                    clock_running=x.clock_running, 
+#                    time_on_clock=x.time_on_clock)
+
+@app.route("/draft/update", methods=['GET'])
 @cross_origin()
-def update_display():
+def status():
     return jsonify(current_team=x.get_current_team(), 
+                   current_pick=x.current_pick,
                    num_rounds=NUM_ROUNDS, 
                    teams=teams, 
                    picks=x.picks, 

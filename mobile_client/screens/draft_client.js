@@ -36,14 +36,14 @@ const DraftScreen = () => {
   };
 
   const refresh = () => {
-    fetch(SERVER_URL + "/client/update", { method: "GET" })
+    fetch(SERVER_URL + "/draft/update", { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
-        setRound(data.pick.round);
-        setPickNumber(data.pick.number);
-        setOverall(data.pick.overall);
-        setPickingTeam(data.team);
-        setTime(data.time);
+        setRound(data.current_pick.round);
+        setPickNumber(data.current_pick.number);
+        setOverall(data.current_pick.overall);
+        setPickingTeam(data.current_team);
+        setTime(data.time_on_clock);
         setClockRunning(data.clock_running);
       })
       .catch(() => {});
@@ -78,13 +78,23 @@ const DraftScreen = () => {
 
   const toggleClock = () => fetch(SERVER_URL + "/draft/toggle_clock", {method: "GET"}).then((r) => r.json()).then((r) => console.log(r)).catch(() => {});
 
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    let formattedSeconds = s.toString();
+    if (formattedSeconds.length < 2) {
+      formattedSeconds = "0" + formattedSeconds;
+    }
+    return m + ":" + formattedSeconds;
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View>
           <View style={styles.pickData}>
             <View>
-              <Text style={styles.teamText}>{pickingTeam} - {time}</Text>
+              <Text style={styles.teamText}>{pickingTeam} - {formatTime(time)}</Text>
             </View>
             <View>
               <Text>
