@@ -9,7 +9,11 @@ const Display = () => {
   const [numRounds, setNumRounds] = useState(0);
   const [teams, setTeams] = useState([]);
   const [picks, setPicks] = useState([[]]);
-  const [currentPick, setCurrentPick] = useState({"round": 0, "number": 0, "overall": 0});
+  const [currentPick, setCurrentPick] = useState({
+    round: 0,
+    number: 0,
+    overall: 0,
+  });
 
   const [timeOnClock, setTimeOnClock] = useState(-1);
   const [clockRunning, setClockRunning] = useState(false);
@@ -65,11 +69,47 @@ const Display = () => {
     return firstName[0] + ". " + lastName;
   };
 
+  const computePickClass = useCallback(
+    (round, team) => {
+      const roundHighlighted = currentPick.round === round;
+
+      if (currentPick.round % 2 === 1) {
+        const activeTeam = team;
+
+        if (roundHighlighted) {
+          return currentPick.number === activeTeam
+            ? "Pick-active"
+            : "Pick-highlighted";
+        } else if (currentPick.number === activeTeam) {
+          return "Pick-highlighted";
+        } else {
+          return "Pick";
+        }
+      } else {
+        const activeTeam = teams.length - team + 1;
+
+        if (roundHighlighted) {
+          return currentPick.number === activeTeam
+            ? "Pick-active"
+            : "Pick-highlighted";
+        } else if (currentPick.number === activeTeam) {
+          return "Pick-highlighted";
+        } else {
+          return "Pick";
+        }
+      }
+    },
+    [currentPick]
+  );
+
   const buildPicks = useCallback(() => {
     return picks.map((round, ridx) => (
       <div className="Pick-row" key={"r" + ridx}>
         {round.map((pick, pidx) => (
-          <div className={currentPick.round - 1 === ridx && currentPick.number - 1 === pidx ? "Pick-active" : currentPick.round - 1 === ridx || currentPick.number - 1 === pidx ? "Pick-highlighted" : "Pick"} key={"r" + ridx + "p" + pidx}>
+          <div
+            className={computePickClass(ridx + 1, pidx + 1)}
+            key={"r" + ridx + "p" + pidx}
+          >
             {pick["show"] && (
               <div>
                 <b>
@@ -84,7 +124,7 @@ const Display = () => {
         ))}
       </div>
     ));
-  }, [picks]);
+  }, [picks, computePickClass]);
 
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60);

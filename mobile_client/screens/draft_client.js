@@ -76,7 +76,10 @@ const DraftScreen = () => {
     return () => clearInterval(refreshInterval);
   }, []);
 
-  const toggleClock = () => fetch(SERVER_URL + "/draft/toggle_clock", {method: "GET"}).then((r) => r.json()).then((r) => console.log(r)).catch(() => {});
+  const toggleClock = () =>
+    fetch(SERVER_URL + "/draft/toggle_clock", { method: "GET" }).catch(
+      () => {}
+    );
 
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60);
@@ -94,7 +97,9 @@ const DraftScreen = () => {
         <View>
           <View style={styles.pickData}>
             <View>
-              <Text style={styles.teamText}>{pickingTeam} - {formatTime(time)}</Text>
+              <Text style={styles.teamText}>
+                {pickingTeam} - {formatTime(time)}
+              </Text>
             </View>
             <View>
               <Text>
@@ -154,7 +159,7 @@ const DraftScreen = () => {
               }
               onPress={confirmDraftPick}
             />
-            <Button 
+            <Button
               title={clockRunning ? "Pause" : "Resume"}
               onPress={toggleClock}
             />

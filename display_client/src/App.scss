@@ -44,6 +44,7 @@ $boardChipWidth: 14vw;
   display: flex;
   height: 100%;
   flex-direction: column;
+  border-right: solid black 5px;
 }
 
 .TeamColContainer {
@@ -57,7 +58,7 @@ $boardChipWidth: 14vw;
 
 .Round {
   flex: auto;
-  margin: 1px;
+  margin: 2px;
   @include centralText()
 }
 
@@ -74,7 +75,7 @@ $boardChipWidth: 14vw;
 .Team {
   width: $boardChipWidth;
   font-size: 1.5em;
-  margin: 1px;
+  margin: 2px;
   @include centralText();
 }
 
