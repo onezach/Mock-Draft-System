@@ -175,6 +175,7 @@ const DraftScreen = (props) => {
                   value={playerName}
                   onChangeText={setPlayerName}
                   style={styles.input}
+                  autoCapitalize="words"
                 />
               </View>
             )}
