@@ -57,11 +57,8 @@ class Draft:
         self.current_pick["overall"] = self.current_pick["overall"] + 1
 
         self.reset_timer()
-        try:
+        if hasattr(self, "timer"):
             self.timer.join()
-        except:
-            print("blah")
-            pass
         self.start_timer()
 
     def get_current_team(self):
