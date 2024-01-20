@@ -26,6 +26,8 @@ class Draft:
         self.current_pick = {"round": 1, "number": 1, "overall": 1}
         self.position_counts = {"QB": 1, "RB": 1, "WR": 1, "TE": 1, "K": 1, "DST": 1}
 
+        self.start_timer()
+
     def make_pick(self, name: str, team: str, position: str):
         self.stop_timer()
 
@@ -55,7 +57,11 @@ class Draft:
         self.current_pick["overall"] = self.current_pick["overall"] + 1
 
         self.reset_timer()
-        self.timer.join()
+        try:
+            self.timer.join()
+        except:
+            print("blah")
+            pass
         self.start_timer()
 
     def get_current_team(self):

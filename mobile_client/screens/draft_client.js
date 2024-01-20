@@ -13,9 +13,8 @@ import PositionButton from "../components/position_button";
 
 import { POSITIONS, TEAMS } from "../data/static";
 
-const SERVER_URL = "http://192.168.1.189:5000";
-
-const DraftScreen = () => {
+const DraftScreen = (props) => {
+  // data from server
   const [round, setRound] = useState(1);
   const [pickNumber, setPickNumber] = useState(1);
   const [overall, setOverall] = useState(1);
@@ -23,6 +22,11 @@ const DraftScreen = () => {
   const [time, setTime] = useState(-1);
   const [clockRunning, setClockRunning] = useState(false);
 
+  // consecutive error tracking
+  const [fails, setFails] = useState(0);
+  const [refreshIntervalID, setRefreshIntervalID] = useState(0);
+
+  // current pick data
   const [playerName, setPlayerName] = useState("");
   const [playerTeam, setPlayerTeam] = useState("");
   const teamDropdownRef = useRef({});
@@ -31,31 +35,61 @@ const DraftScreen = () => {
   const reset = () => {
     setPlayerName("");
     setPlayerTeam("");
-    setPlayerPosition("");
     teamDropdownRef.current.reset();
+    setPlayerPosition("");
+    setFails(0);
+  };
+
+  const processError = (error) => {
+    // invalid draft code
+    if (error === 100) {
+      console.log("invalid draft code");
+      setFails((prev) => prev + 1);
+    }
+
+    // unknown error
+    else {
+      console.log("unknown error");
+      setFails((prev) => prev + 1);
+    }
   };
 
   const refresh = () => {
-    fetch(SERVER_URL + "/draft/update", { method: "GET" })
+    fetch(props.serverURL + "/draft/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ draft_code: props.draftCode }),
+    })
       .then((res) => res.json())
       .then((data) => {
-        setRound(data.current_pick.round);
-        setPickNumber(data.current_pick.number);
-        setOverall(data.current_pick.overall);
-        setPickingTeam(data.current_team);
-        setTime(data.time_on_clock);
-        setClockRunning(data.clock_running);
+        if (data.error === 0) {
+          // update with data from server
+          setRound(data.current_pick.round);
+          setPickNumber(data.current_pick.number);
+          setOverall(data.current_pick.overall);
+          setPickingTeam(data.current_team);
+          setTime(data.time_on_clock);
+          setClockRunning(data.clock_running);
+
+          // reset consecutive error tracking
+          setFails(0);
+        } else {
+          processError(data.error);
+        }
       })
       .catch(() => {});
   };
 
   const confirmDraftPick = () => {
-    fetch(SERVER_URL + "/client/pick", {
+    fetch(props.serverURL + "/client/pick", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        draft_code: props.draftCode,
         name: playerName,
         team: playerTeam,
         position: playerPosition,
@@ -63,23 +97,48 @@ const DraftScreen = () => {
     })
       .then((r) => r.json())
       .then((r) => {
-        console.log(r);
-        reset();
-        refresh();
-      });
+        if (r.error === 0) {
+          // reset input data
+          reset();
+        } else {
+          processError(data.error);
+        }
+      })
+      .catch(() => {});
   };
 
+  // Refreshes data from server
   useEffect(() => {
-    const refreshInterval = setInterval(() => {
-      refresh();
-    }, 500);
-    return () => clearInterval(refreshInterval);
+    const refreshInterval = setInterval(refresh, 500);
+    setRefreshIntervalID(refreshInterval);
   }, []);
 
+  // Timeout -- if too many errors in a row (likely an invalid code), shuts down current refresh cycle
+  //            and returns client to initialiation screen
+  useEffect(() => {
+    if (fails > 4) {
+      clearInterval(refreshIntervalID);
+      props.onReset();
+    }
+  }, [fails]);
+
   const toggleClock = () =>
-    fetch(SERVER_URL + "/draft/toggle_clock", { method: "GET" }).catch(
-      () => {}
-    );
+    fetch(props.serverURL + "/draft/toggle_clock", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ draft_code: props.draftCode }),
+    })
+      .then((r) => r.json())
+      .then((r) => {
+        if (r.error == 0) {
+          setFails(0);
+        } else {
+          processError(data.error);
+        }
+      })
+      .catch(() => {});
 
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60);
@@ -175,7 +234,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "white",
   },
   pickData: {
     flex: 3,
@@ -183,7 +241,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputsContainer: {
-    // borderWidth: 1,
     flex: 4,
     justifyContent: "center",
     alignItems: "center",
@@ -192,7 +249,6 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 5,
     width: "80%",
-    backgroundColor: "white",
     borderWidth: 2,
     borderRadius: 5,
   },
