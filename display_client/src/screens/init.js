@@ -42,16 +42,31 @@ const DisplayInitializationScreen = (props) => {
   };
 
   return (
-    <div className="Container">
-      <label htmlFor="display_draft_code">Draft Code</label>
-      <input
-        id="display_draft_code"
-        name="display_draft_code"
-        size={8}
-        value={draftCode}
-        onChange={(e) => setDraftCode(e.target.value)}
-      />
-      <input type="button" value="Connect" onClick={connect} />
+    <div className="Init-container">
+      <div className="Init-item">
+        <label htmlFor="display_draft_code">Enter Draft Code</label>
+      </div>
+      <div className="Init-item">
+        <input
+          id="display_draft_code"
+          name="display_draft_code"
+          className="Init-input"
+          value={draftCode}
+          onChange={(e) => setDraftCode(e.target.value)}
+          maxLength={8}
+          placeholder="abcd1234"
+          autoComplete="off"
+        />
+      </div>
+      <div className="Init-item">
+        <input
+          type="button"
+          className="Init-connect"
+          value="Connect!"
+          onClick={connect}
+          disabled={draftCode.length != 8}
+        />
+      </div>
     </div>
   );
 };
