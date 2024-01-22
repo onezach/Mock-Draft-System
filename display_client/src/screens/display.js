@@ -14,7 +14,7 @@ const Display = (props) => {
   });
 
   const [timeOnClock, setTimeOnClock] = useState(-1);
-  const [clockRunning, setClockRunning] = useState(false);
+  // const [clockRunning, setClockRunning] = useState(false);
 
   const [timeout, setTimeout] = useState(0);
   const [refreshIntervalID, setRefreshIntervalID] = useState(0);
@@ -37,7 +37,7 @@ const Display = (props) => {
     setTimeout((t) => t + 1);
   };
 
-  const refresh = () => {
+  const refresh = useCallback(() => {
     fetch(props.serverURL + "/draft/update", {
       method: "POST",
       headers: {
@@ -52,7 +52,7 @@ const Display = (props) => {
           setNumRounds(r.num_rounds);
           setTeams(r.teams);
           setPicks(r.picks);
-          setClockRunning(r.clock_running);
+          // setClockRunning(r.clock_running);
           setTimeOnClock(r.time_on_clock);
           setCurrentPick(r.current_pick);
 
@@ -64,14 +64,14 @@ const Display = (props) => {
       .catch(() => {
         processError(-1);
       });
-  };
+  }, [props.draftCode, props.serverURL]);
 
   // Refreshes data from server
   useEffect(() => {
     const refreshInterval = setInterval(refresh, 500);
     setRefreshIntervalID(refreshInterval);
     return () => clearInterval(refreshInterval);
-  }, [timeOnClock]);
+  }, [timeOnClock, refresh]);
 
   // Timeout -- if too many errors in a row (likely an invalid code), shuts down current refresh cycle
   //            and returns client to initialiation screen
@@ -80,7 +80,7 @@ const Display = (props) => {
       clearInterval(refreshIntervalID);
       props.onReset();
     }
-  }, [timeout]);
+  }, [timeout, props, refreshIntervalID]);
 
   const buildRounds = useCallback(() => {
     let rounds = [];
@@ -143,7 +143,7 @@ const Display = (props) => {
         }
       }
     },
-    [currentPick]
+    [currentPick, teams.length]
   );
 
   const buildPicks = useCallback(() => {

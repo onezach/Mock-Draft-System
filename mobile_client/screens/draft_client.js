@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   TouchableWithoutFeedback,
   View,
@@ -58,7 +58,7 @@ const DraftScreen = (props) => {
     setTimeout((t) => t + 1);
   };
 
-  const refresh = () => {
+  const refresh = useCallback(() => {
     fetch(props.serverURL + "/draft/update", {
       method: "POST",
       headers: {
@@ -86,7 +86,7 @@ const DraftScreen = (props) => {
       .catch(() => {
         processError(-1);
       });
-  };
+  }, [props.serverURL, props.draftCode]);
 
   const confirmDraftPick = () => {
     fetch(props.serverURL + "/client/pick", {
@@ -96,7 +96,7 @@ const DraftScreen = (props) => {
       },
       body: JSON.stringify({
         draft_code: props.draftCode,
-        name: playerName,
+        name: playerName.trim(),
         team: playerTeam,
         position: playerPosition,
       }),
@@ -120,7 +120,7 @@ const DraftScreen = (props) => {
     const refreshInterval = setInterval(refresh, 500);
     setRefreshIntervalID(refreshInterval);
     return () => clearInterval(refreshInterval);
-  }, []);
+  }, [refresh]);
 
   // Timeout -- if too many errors in a row (likely an invalid code), shuts down current refresh cycle
   //            and returns client to initialiation screen
@@ -129,7 +129,7 @@ const DraftScreen = (props) => {
       clearInterval(refreshIntervalID);
       props.onReset();
     }
-  }, [timeout]);
+  }, [timeout, refreshIntervalID, props]);
 
   const toggleClock = () =>
     fetch(props.serverURL + "/draft/toggle_clock", {

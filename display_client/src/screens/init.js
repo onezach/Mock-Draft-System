@@ -64,7 +64,7 @@ const DisplayInitializationScreen = (props) => {
           className="Init-connect"
           value="Connect!"
           onClick={connect}
-          disabled={draftCode.length != 8}
+          disabled={draftCode.length !== 8}
         />
       </div>
     </div>
