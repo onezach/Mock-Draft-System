@@ -17,8 +17,13 @@ const InitializationScreen = (props) => {
   const [timePerPick, setTimePerPick] = useState("");
 
   const processError = (error) => {
+    // no response from server
+    if (error === -1) {
+      console.log("not connected to server");
+    }
+
     // invalid draft code
-    if (error === 100) {
+    else if (error === 100) {
       console.log("invalid draft code");
     }
 
@@ -56,7 +61,9 @@ const InitializationScreen = (props) => {
         .then((r) => {
           props.startDraft(r.draft_code);
         })
-        .catch(() => {});
+        .catch(() => {
+          processError(-1);
+        });
     }
   };
 
@@ -76,7 +83,9 @@ const InitializationScreen = (props) => {
           processError(r.error);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        processError(-1);
+      });
   };
 
   return (

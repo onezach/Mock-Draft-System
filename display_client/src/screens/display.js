@@ -1,10 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 
-import { TEAM_MAPPINGS } from "./data/static";
+import { TEAM_MAPPINGS } from "../data/static";
 
-const SERVER_URL = "http://192.168.1.189:5000";
-
-const Display = () => {
+const Display = (props) => {
   const [currentTeam, setCurrentTeam] = useState("");
   const [numRounds, setNumRounds] = useState(0);
   const [teams, setTeams] = useState([]);
@@ -18,13 +16,38 @@ const Display = () => {
   const [timeOnClock, setTimeOnClock] = useState(-1);
   const [clockRunning, setClockRunning] = useState(false);
 
-  useEffect(() => {
-    const updateInterval = setInterval(() => {
-      fetch(SERVER_URL + "/draft/update", {
-        method: "GET",
-      })
-        .then((r) => r.json())
-        .then((r) => {
+  const [timeout, setTimeout] = useState(0);
+  const [refreshIntervalID, setRefreshIntervalID] = useState(0);
+
+  const processError = (error) => {
+    // no response from server
+    if (error === -1) {
+      console.log("not connected to server");
+    }
+
+    // invalid draft code
+    else if (error === 100) {
+      console.log("invalid draft code");
+    }
+
+    // unknown error
+    else {
+      console.log("unknown error");
+    }
+    setTimeout((t) => t + 1);
+  };
+
+  const refresh = () => {
+    fetch(props.serverURL + "/draft/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ draft_code: props.draftCode }),
+    })
+      .then((r) => r.json())
+      .then((r) => {
+        if (r.error === 0) {
           setCurrentTeam(r.current_team);
           setNumRounds(r.num_rounds);
           setTeams(r.teams);
@@ -32,11 +55,32 @@ const Display = () => {
           setClockRunning(r.clock_running);
           setTimeOnClock(r.time_on_clock);
           setCurrentPick(r.current_pick);
-        })
-        .catch(() => {});
-    }, 500);
-    return () => clearInterval(updateInterval);
+
+          setTimeout(0);
+        } else {
+          processError(r.error);
+        }
+      })
+      .catch(() => {
+        processError(-1);
+      });
+  };
+
+  // Refreshes data from server
+  useEffect(() => {
+    const refreshInterval = setInterval(refresh, 500);
+    setRefreshIntervalID(refreshInterval);
+    return () => clearInterval(refreshInterval);
   }, [timeOnClock]);
+
+  // Timeout -- if too many errors in a row (likely an invalid code), shuts down current refresh cycle
+  //            and returns client to initialiation screen
+  useEffect(() => {
+    if (timeout > 4) {
+      clearInterval(refreshIntervalID);
+      props.onReset();
+    }
+  }, [timeout]);
 
   const buildRounds = useCallback(() => {
     let rounds = [];

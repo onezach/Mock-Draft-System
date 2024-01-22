@@ -11,22 +11,33 @@ export default function App() {
   const [draftCode, setDraftCode] = useState(0);
 
   const handleDraftStart = (code) => {
-    console.log(code)
+    console.log(code);
     setDraftCode(code);
     setScreen("draft");
-  }
+  };
 
   const onReset = () => {
-    console.log('reset triggered')
+    console.log("reset triggered");
     setDraftCode(0);
     setScreen("init");
-  }
+  };
 
   if (screen === "draft") {
-    return <DraftScreen draftCode={draftCode} serverURL={SERVER_URL} onReset={onReset}/>;
+    return (
+      <DraftScreen
+        draftCode={draftCode}
+        serverURL={SERVER_URL}
+        onReset={onReset}
+      />
+    );
   }
 
-  return <InitializationScreen startDraft={handleDraftStart} serverURL={SERVER_URL}/>
+  return (
+    <InitializationScreen
+      startDraft={handleDraftStart}
+      serverURL={SERVER_URL}
+    />
+  );
 }
 
 const styles = StyleSheet.create({

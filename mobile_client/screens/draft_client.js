@@ -22,8 +22,8 @@ const DraftScreen = (props) => {
   const [time, setTime] = useState(-1);
   const [clockRunning, setClockRunning] = useState(false);
 
-  // consecutive error tracking
-  const [fails, setFails] = useState(0);
+  // timeout/error tracking
+  const [timeout, setTimeout] = useState(0);
   const [refreshIntervalID, setRefreshIntervalID] = useState(0);
 
   // current pick data
@@ -37,21 +37,25 @@ const DraftScreen = (props) => {
     setPlayerTeam("");
     teamDropdownRef.current.reset();
     setPlayerPosition("");
-    setFails(0);
+    setTimeout(0);
   };
 
   const processError = (error) => {
+    // no response from server
+    if (error === -1) {
+      console.log("not connected to server");
+    }
+
     // invalid draft code
-    if (error === 100) {
+    else if (error === 100) {
       console.log("invalid draft code");
-      setFails((prev) => prev + 1);
     }
 
     // unknown error
     else {
       console.log("unknown error");
-      setFails((prev) => prev + 1);
     }
+    setTimeout((t) => t + 1);
   };
 
   const refresh = () => {
@@ -73,13 +77,15 @@ const DraftScreen = (props) => {
           setTime(data.time_on_clock);
           setClockRunning(data.clock_running);
 
-          // reset consecutive error tracking
-          setFails(0);
+          // reset timeout on success
+          setTimeout(0);
         } else {
           processError(data.error);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        processError(-1);
+      });
   };
 
   const confirmDraftPick = () => {
@@ -104,23 +110,26 @@ const DraftScreen = (props) => {
           processError(data.error);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        processError(-1);
+      });
   };
 
   // Refreshes data from server
   useEffect(() => {
     const refreshInterval = setInterval(refresh, 500);
     setRefreshIntervalID(refreshInterval);
+    return () => clearInterval(refreshInterval);
   }, []);
 
   // Timeout -- if too many errors in a row (likely an invalid code), shuts down current refresh cycle
   //            and returns client to initialiation screen
   useEffect(() => {
-    if (fails > 4) {
+    if (timeout > 4) {
       clearInterval(refreshIntervalID);
       props.onReset();
     }
-  }, [fails]);
+  }, [timeout]);
 
   const toggleClock = () =>
     fetch(props.serverURL + "/draft/toggle_clock", {
@@ -133,12 +142,14 @@ const DraftScreen = (props) => {
       .then((r) => r.json())
       .then((r) => {
         if (r.error == 0) {
-          setFails(0);
+          setTimeout(0);
         } else {
           processError(data.error);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        processError(-1);
+      });
 
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60);

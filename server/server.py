@@ -81,6 +81,7 @@ def initialize_new_draft():
     return jsonify(draft_code=draft_code)
 
 @app.route("/draft/join", methods=['POST'])
+@cross_origin()
 def join_existing_draft():
     data = request.get_json()
     return jsonify(error=0) if data["draft_code"] in drafts else jsonify(error=100)
