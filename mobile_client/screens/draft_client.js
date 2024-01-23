@@ -164,7 +164,7 @@ const DraftScreen = (props) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <View>
+        <View style={{ padding: 15 }}>
           <View style={styles.pickData}>
             <View>
               <Text style={styles.teamText}>
@@ -235,6 +235,7 @@ const DraftScreen = (props) => {
               onPress={toggleClock}
             />
           </View>
+          <Text style={styles.code}>{props.draftCode}</Text>
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -286,6 +287,9 @@ const styles = StyleSheet.create({
   },
   teamText: {
     fontSize: 36,
+  },
+  code: {
+    color: "#ccc",
   },
 });
 

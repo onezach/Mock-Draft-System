@@ -183,7 +183,7 @@ const Display = (props) => {
   return (
     <div className="Container">
       <div className="Header">
-        <div className="OffTitle" />
+        <div className="OffTitle">{props.draftCode}</div>
         <div className="OnTitle">
           {currentTeam} - {formatTime(timeOnClock)}
         </div>
