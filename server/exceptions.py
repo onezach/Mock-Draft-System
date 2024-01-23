@@ -1,0 +1,2 @@
+class InvalidDraftCode(Exception):
+    pass

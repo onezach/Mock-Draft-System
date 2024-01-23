@@ -5,8 +5,7 @@ import random
 import math
 
 from draft import Draft
-
-app = Flask(__name__)
+from exceptions import InvalidDraftCode
 
 """
 Error Codes
@@ -14,7 +13,10 @@ Error Codes
 100     Invalid draft code
 200     Invalid user code
 300     Invalid draft pick - player already taken
+900     Unknown error
 """
+
+app = Flask(__name__)
 
 drafts = {str: Draft}
 
@@ -31,8 +33,10 @@ def pick():
         draft = validate(draft_code=data["draft_code"])
         draft.make_pick(data["name"], data["team"], data["position"])
         return jsonify(error=0)
-    except Exception as e:
-        return jsonify(error=int(str(e)))
+    except InvalidDraftCode:
+        return jsonify(error=100)
+    except Exception:
+        return jsonify(error=900)
 
 @app.route("/draft/update", methods=['POST'])
 @cross_origin()
@@ -49,8 +53,10 @@ def status():
             clock_running=draft.clock_running, 
             time_on_clock=draft.time_on_clock,
             error=0)
-    except Exception as e:
-        return jsonify(error=int(str(e)))
+    except InvalidDraftCode:
+        return jsonify(error=100)
+    except Exception:
+        return jsonify(error=900)
     
 @app.route("/draft/toggle_clock", methods=['POST'])
 def toggle_clock():
@@ -60,8 +66,10 @@ def toggle_clock():
         draft = validate(draft_code=data["draft_code"])
         draft.toggle_timer()
         return jsonify(error=0)
-    except Exception as e:
-        return jsonify(error=int(str(e)))
+    except InvalidDraftCode:
+        return jsonify(error=100)
+    except Exception:
+        return jsonify(error=900)
 
 
 @app.route("/draft/init", methods=['POST'])
@@ -87,6 +95,9 @@ def join_existing_draft():
     return jsonify(error=0) if data["draft_code"] in drafts else jsonify(error=100)
 
 def generate_code() -> str:
+    '''
+    Generate a randomized code string consisting of 4 letters followed by 4 numbers
+    '''
     letters = ""
     for i in range(4):
         letters = letters + (random.choice(string.ascii_letters))
@@ -96,8 +107,15 @@ def generate_code() -> str:
     return letters + numbers
 
 def validate(draft_code: str) -> Draft:
+    '''
+    Verify if a given draft code exists within the current set of active drafts
+
+    Returns the requested Draft object if successful
+
+    Raises an InvalidDraftCode exception if unsuccessful
+    '''
     if draft_code not in drafts:
-        raise Exception(100)
+        raise InvalidDraftCode
     return drafts[draft_code]
 
 if __name__ == "__main__":
