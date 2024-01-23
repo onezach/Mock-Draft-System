@@ -8,8 +8,6 @@ from draft import Draft
 
 app = Flask(__name__)
 
-drafts = {}
-
 """
 Error Codes
 0       No error
@@ -17,6 +15,8 @@ Error Codes
 200     Invalid user code
 300     Invalid draft pick - player already taken
 """
+
+drafts = {str: Draft}
 
 @app.route("/", methods=['GET'])
 @cross_origin()
@@ -86,7 +86,7 @@ def join_existing_draft():
     data = request.get_json()
     return jsonify(error=0) if data["draft_code"] in drafts else jsonify(error=100)
 
-def generate_code():
+def generate_code() -> str:
     letters = ""
     for i in range(4):
         letters = letters + (random.choice(string.ascii_letters))
@@ -95,7 +95,7 @@ def generate_code():
         numbers = "0" + numbers
     return letters + numbers
 
-def validate(draft_code):
+def validate(draft_code: str) -> Draft:
     if draft_code not in drafts:
         raise Exception(100)
     return drafts[draft_code]

@@ -29,6 +29,14 @@ class Draft:
         self.start_timer()
 
     def make_pick(self, name: str, team: str, position: str):
+        '''
+        Adds a new pick to the draft board.
+        
+        Parameters:
+            name (str): The name of the picked player
+            team (str): The team of the picked player
+            position (str): The position of the picked player
+        '''
         self.stop_timer()
 
         r = self.current_pick["round"] - 1
