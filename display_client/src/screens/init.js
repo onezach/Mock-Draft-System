@@ -2,21 +2,25 @@ import { useState } from "react";
 
 const DisplayInitializationScreen = (props) => {
   const [draftCode, setDraftCode] = useState("");
+  const [error, setError] = useState("");
 
   const processError = (error) => {
     // no response from server
     if (error === -1) {
-      console.log("not connected to server");
+      setError("not connected to server");
+      // console.log("not connected to server");
     }
 
     // invalid draft code
     else if (error === 100) {
-      console.log("invalid draft code");
+      setError("invalid draft code");
+      // console.log("invalid draft code");
     }
 
     // unknown error
     else {
-      console.log("unknown error");
+      setError("unknown error");
+      // console.log("unknown error");
     }
   };
 
@@ -31,6 +35,7 @@ const DisplayInitializationScreen = (props) => {
       .then((r) => r.json())
       .then((r) => {
         if (r.error === 0) {
+          setError("");
           props.showDraft(draftCode);
         } else {
           processError(r.error);
@@ -58,6 +63,7 @@ const DisplayInitializationScreen = (props) => {
           autoComplete="off"
         />
       </div>
+      {error !== "" && <div style={{color: "red"}}>* {error} *</div>}
       <div className="Init-item">
         <input
           type="button"

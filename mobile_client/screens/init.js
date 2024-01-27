@@ -16,20 +16,25 @@ const InitializationScreen = (props) => {
   const [numRounds, setNumRounds] = useState("");
   const [timePerPick, setTimePerPick] = useState("");
 
+  const [error, setError] = useState("");
+
   const processError = (error) => {
     // no response from server
     if (error === -1) {
-      console.log("not connected to server");
+      // console.log("not connected to server");
+      setError("not connected to server");
     }
 
     // invalid draft code
     else if (error === 100) {
-      console.log("invalid draft code");
+      // console.log("invalid draft code");
+      setError("invalid draft code");
     }
 
     // unknown error
     else {
-      console.log("unknown error");
+      // console.log("unknown error");
+      setError("unknown error");
     }
   };
 
@@ -110,6 +115,7 @@ const InitializationScreen = (props) => {
                 autoCapitalize="none"
               />
             </View>
+            {error !== "" && <Text style={{color: "red"}}>* {error} *</Text>}
           </View>
         ) : (
           <View style={styles.inputsContainer}>
@@ -148,28 +154,28 @@ const InitializationScreen = (props) => {
             </View>
           </View>
         )}
-        <Button
-          title={joinWithCode ? "Join New Draft" : "Join Existing Draft"}
-          onPress={() => setJoinWithCode((b) => !b)}
-        />
+        {joinWithCode ? (
+          <Button
+            title="Start"
+            disabled={draftCode.length != 8}
+            onPress={joinDraft}
+          />
+        ) : (
+          <Button
+            title="Start"
+            disabled={
+              isNaN(parseInt(numTeams)) ||
+              isNaN(parseInt(numRounds)) ||
+              isNaN(parseInt(timePerPick))
+            }
+            onPress={sendDraftInfo}
+          />
+        )}
         <View style={styles.buttonContainer}>
-          {joinWithCode ? (
-            <Button
-              title="Start"
-              disabled={draftCode.length != 8}
-              onPress={joinDraft}
-            />
-          ) : (
-            <Button
-              title="Start"
-              disabled={
-                isNaN(parseInt(numTeams)) ||
-                isNaN(parseInt(numRounds)) ||
-                isNaN(parseInt(timePerPick))
-              }
-              onPress={sendDraftInfo}
-            />
-          )}
+          <Button
+            title={joinWithCode ? "Join New Draft" : "Join Existing Draft"}
+            onPress={() => setJoinWithCode((b) => !b)}
+          />
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -212,7 +218,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   buttonContainer: {
-    flex: 3,
+    flex: 4,
     justifyContent: "center",
     alignItems: "center",
   },

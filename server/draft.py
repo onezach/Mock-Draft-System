@@ -2,6 +2,7 @@ from copy import deepcopy
 import csv
 from threading import Thread
 import time
+from exceptions import InvalidDraftPick
 
 class Draft:
 
@@ -39,6 +40,13 @@ class Draft:
         '''
         self.stop_timer()
 
+        # validate - raise InvalidDraftPick exception on attempted duplicate pick
+        for i in range(len(self.picks)):
+            for j in range(len(self.picks[i])):
+                if self.picks[i][j]["show"] and (name == self.picks[i][j]["name"]) and (team == self.picks[i][j]["team"]) and (position == self.picks[i][j]["position"]):
+                    self.resume_timer()
+                    raise InvalidDraftPick
+
         r = self.current_pick["round"] - 1
         n = self.current_pick["number"] - 1 if self.current_pick["round"] % 2 == 1 else self.num_teams - self.current_pick["number"]
 
@@ -55,9 +63,8 @@ class Draft:
         self.__advance_pick()
     
     def __advance_pick(self):
+        self.__save()
         if self.current_pick["number"] == self.num_teams:
-            self.__save()
-
             self.current_pick["round"] = self.current_pick["round"] + 1
             self.current_pick["number"] = 1
         else:
@@ -79,8 +86,6 @@ class Draft:
         with open("save.csv", "w") as savefile:
             writer = csv.writer(savefile)
             for i in range(self.current_pick["round"]):
-                for j in range(self.num_teams):
-                    print(f"{self.picks[i][j]["name"]},{self.picks[i][j]["position"]},{self.picks[i][j]["position_rank"]},{self.picks[i][j]["overall"]}")
                 writer.writerow(self.picks[i])
 
     def start_timer(self):
@@ -91,6 +96,10 @@ class Draft:
 
     def stop_timer(self): 
         self.clock_running = False
+
+    def resume_timer(self):
+        if not self.clock_running:
+            self.clock_running = True
 
     def toggle_timer(self):
         if self.clock_running:

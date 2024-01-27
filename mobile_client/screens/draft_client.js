@@ -32,30 +32,45 @@ const DraftScreen = (props) => {
   const teamDropdownRef = useRef({});
   const [playerPosition, setPlayerPosition] = useState("");
 
+  // error message
+  const [error, setError] = useState("");
+
   const reset = () => {
     setPlayerName("");
     setPlayerTeam("");
     teamDropdownRef.current.reset();
     setPlayerPosition("");
     setTimeout(0);
+    setError("");
   };
 
   const processError = (error) => {
     // no response from server
     if (error === -1) {
-      console.log("not connected to server");
+      setError("not connected to server");
+      setTimeout((t) => t + 1);
+      // console.log("not connected to server");
     }
 
     // invalid draft code
-    else if (error === 100) {
-      console.log("invalid draft code");
+    if (error === 100) {
+      setError("invalid draft code");
+      setTimeout((t) => t + 1);
+      // console.log("invalid draft code");
+    }
+
+    // invalid draft pick
+    else if (error === 300) {
+      // console.log("invalid draft pick");
+      setError("invalid draft pick");
     }
 
     // unknown error
     else {
-      console.log("unknown error");
+      // console.log("unknown error");
+      setError("unknown error");
+      setTimeout((t) => t + 1);
     }
-    setTimeout((t) => t + 1);
   };
 
   const refresh = useCallback(() => {
@@ -66,24 +81,25 @@ const DraftScreen = (props) => {
       },
       body: JSON.stringify({ draft_code: props.draftCode }),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error === 0) {
+      .then((r) => r.json())
+      .then((r) => {
+        if (r.error === 0) {
           // update with data from server
-          setRound(data.current_pick.round);
-          setPickNumber(data.current_pick.number);
-          setOverall(data.current_pick.overall);
-          setPickingTeam(data.current_team);
-          setTime(data.time_on_clock);
-          setClockRunning(data.clock_running);
+          setRound(r.current_pick.round);
+          setPickNumber(r.current_pick.number);
+          setOverall(r.current_pick.overall);
+          setPickingTeam(r.current_team);
+          setTime(r.time_on_clock);
+          setClockRunning(r.clock_running);
 
           // reset timeout on success
           setTimeout(0);
         } else {
-          processError(data.error);
+          processError(r.error);
         }
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
         processError(-1);
       });
   }, [props.serverURL, props.draftCode]);
@@ -107,10 +123,11 @@ const DraftScreen = (props) => {
           // reset input data
           reset();
         } else {
-          processError(data.error);
+          processError(r.error);
         }
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
         processError(-1);
       });
   };
@@ -219,6 +236,7 @@ const DraftScreen = (props) => {
                 />
               ))}
             </View>
+            {error !== "" && <Text style={{color: "red"}}>* {error} *</Text>}
           </View>
           <View style={styles.buttonContainer}>
             <Button

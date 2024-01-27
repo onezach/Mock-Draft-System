@@ -5,14 +5,14 @@ import random
 import math
 
 from draft import Draft
-from exceptions import InvalidDraftCode
+from exceptions import InvalidDraftCode, InvalidDraftPick
 
 """
 Error Codes
 0       No error
 100     Invalid draft code
 200     Invalid user code
-300     Invalid draft pick - player already taken
+300     Invalid draft pick (player already taken)
 900     Unknown error
 """
 
@@ -35,6 +35,8 @@ def pick():
         return jsonify(error=0)
     except InvalidDraftCode:
         return jsonify(error=100)
+    except InvalidDraftPick:
+        return jsonify(error=300)
     except Exception:
         return jsonify(error=900)
 
