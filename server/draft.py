@@ -13,6 +13,8 @@ class Draft:
         self.time_per_pick = time_per_pick
         self.time_on_clock = time_per_pick
         self.clock_running = False
+        self.complete = False
+        self.total_picks = num_rounds * len(teams)
 
         cell = {"name": "", "team": "", "position": "", "position_rank": 0, "show": False}
         p = []
@@ -60,21 +62,26 @@ class Draft:
         })
 
         self.position_counts[position] = self.position_counts[position] + 1
+        self.__save()
         self.__advance_pick()
     
     def __advance_pick(self):
-        self.__save()
-        if self.current_pick["number"] == self.num_teams:
-            self.current_pick["round"] = self.current_pick["round"] + 1
-            self.current_pick["number"] = 1
-        else:
-            self.current_pick["number"] = self.current_pick["number"] + 1
-        self.current_pick["overall"] = self.current_pick["overall"] + 1
+        if self.current_pick["overall"] < self.total_picks:
+            if self.current_pick["number"] == self.num_teams:
+                self.current_pick["round"] = self.current_pick["round"] + 1
+                self.current_pick["number"] = 1
+            else:
+                self.current_pick["number"] = self.current_pick["number"] + 1
+            self.current_pick["overall"] = self.current_pick["overall"] + 1
 
-        self.reset_timer()
-        if hasattr(self, "timer"):
-            self.timer.join()
-        self.start_timer()
+            self.reset_timer()
+            if hasattr(self, "timer"):
+                self.timer.join()
+            self.start_timer()
+        
+        # finish draft
+        else:
+            self.complete = True
 
     def get_current_team(self):
         if self.current_pick["round"] % 2 == 1:
